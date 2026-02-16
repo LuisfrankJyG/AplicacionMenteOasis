@@ -27,7 +27,9 @@ import com.LuisS.menteoasis.ui.AppViewModelProvider
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AsistenciaScreen(
     modifier: Modifier = Modifier,
@@ -35,109 +37,223 @@ fun AsistenciaScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddEmployeeDialog by remember { mutableStateOf(false) }
-    var selectedEmployee by remember { mutableStateOf<EmployeeEntity?>(null) } // Local state for selection
     
-    // Auto-select first employee if none selected and list not empty
-    LaunchedEffect(uiState.employees) {
-        if (selectedEmployee == null && uiState.employees.isNotEmpty()) {
-            selectedEmployee = uiState.employees.first()
-        }
-    }
+    val months = listOf(
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    )
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAddEmployeeDialog = true }) {
-                Icon(Icons.Default.PersonAdd, contentDescription = "Add Employee")
+            FloatingActionButton(
+                onClick = { showAddEmployeeDialog = true },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(Icons.Default.PersonAdd, contentDescription = "Añadir Empleado")
             }
+        },
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { 
+                    Text(
+                        "MenteOasis Asistencia", 
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black)
+                    ) 
+                }
+            )
         }
     ) { innerPadding ->
-        Column(
+        // Use a single Box to manage responsiveness for BOTH list and overlay
+        Box(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(innerPadding),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Text(
-                text = "Control de Asistencia",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Employee Selector (Simple Chips or Dropdown)
-            Text("Seleccionar Empleado:", style = MaterialTheme.typography.labelLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            if (uiState.employees.isEmpty()) {
-                Text(
-                    "No hay empleados registrados. Agrega uno con el botón +",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error
-                )
-            } else {
-                // Horizontal scroll for employees
-                // Or simplified dropdown. Let's use a nice Card selector
-                 LazyColumn(modifier = Modifier.height(120.dp)) {
-                     items(uiState.employees) { employee ->
-                         EmployeeCard(
-                             employee = employee,
-                             isSelected = selectedEmployee?.id == employee.id,
-                             onClick = { selectedEmployee = employee }
-                         )
-                     }
-                 }
-            }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            // Maximum width container for all content
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .widthIn(max = 600.dp)
+                    .padding(horizontal = 16.dp)
             ) {
-                Button(
-                    onClick = { 
-                        selectedEmployee?.let { viewModel.addRecord(it.id, RecordType.ENTRADA) }
-                    },
-                    modifier = Modifier.weight(1f).height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)), // Green
-                    enabled = selectedEmployee != null
+                // --- SUMMARY & FILTERS ---
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                    ),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("ENTRADA", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        // Total Summary Row
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Timer, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Total del Periodo", 
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            Text(
+                                uiState.totalPeriodHours,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Month Selector
+                        Text("Filtrar por Mes:", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                        ScrollableTabRow(
+                            selectedTabIndex = uiState.selectedMonth,
+                            edgePadding = 0.dp,
+                            containerColor = Color.Transparent,
+                            divider = {},
+                            indicator = {}
+                        ) {
+                            months.forEachIndexed { index, month ->
+                                FilterChip(
+                                    selected = uiState.selectedMonth == index,
+                                    onClick = { viewModel.setMonthFilter(index) },
+                                    label = { Text(month) },
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+
+                        // Employee Selector
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Empleado:", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                        val employeeIndex = if (uiState.selectedEmployeeId == null) 0 
+                                          else uiState.employees.indexOfFirst { it.id == uiState.selectedEmployeeId } + 1
+                        ScrollableTabRow(
+                            selectedTabIndex = if (employeeIndex >= 0) employeeIndex else 0,
+                            edgePadding = 0.dp,
+                            containerColor = Color.Transparent,
+                            divider = {},
+                            indicator = {}
+                        ) {
+                            FilterChip(
+                                selected = uiState.selectedEmployeeId == null,
+                                onClick = { viewModel.setEmployeeFilter(null) },
+                                label = { Text("Todos") },
+                                modifier = Modifier.padding(horizontal = 4.dp),
+                                leadingIcon = { Icon(Icons.Default.Groups, contentDescription = null, modifier = Modifier.size(18.dp)) }
+                            )
+                            uiState.employees.forEach { emp ->
+                                FilterChip(
+                                    selected = uiState.selectedEmployeeId == emp.id,
+                                    onClick = { viewModel.setEmployeeFilter(emp.id) },
+                                    label = { Text(emp.name) },
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+                    }
                 }
-                
-                Button(
-                    onClick = { 
-                        selectedEmployee?.let { viewModel.addRecord(it.id, RecordType.SALIDA) }
-                    },
-                    modifier = Modifier.weight(1f).height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)), // Red
-                    enabled = selectedEmployee != null
+
+                // --- HISTORY LIST ---
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("SALIDA", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        "Historial Detallado", 
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                    if (uiState.dailyRecords.isNotEmpty()) {
+                        Text(
+                            "${uiState.dailyRecords.size} días",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
+                if (uiState.dailyRecords.isEmpty()) {
+                    Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.Inbox, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color.LightGray)
+                            Text("No hay registros en este periodo", color = Color.Gray)
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(bottom = 120.dp), // Extra space for overlay
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        uiState.dailyRecords.forEach { daily ->
+                            item {
+                                DailyHeader(daily.date, daily.totalHours)
+                            }
+                            items(daily.records) { record ->
+                                TimelineItem(record)
+                            }
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            Text("Historial de Asistencia", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold))
-            Spacer(modifier = Modifier.height(12.dp))
-
-            if (uiState.dailyRecords.isEmpty()) {
-                Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("No hay registros recientes", style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(bottom = 80.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+            // --- ACTION OVERLAY (Now anchored inside the same Box/Grid) ---
+            if (uiState.selectedEmployeeId != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 32.dp)
+                        .widthIn(max = 600.dp)
+                        .padding(horizontal = 16.dp)
                 ) {
-                    uiState.dailyRecords.forEach { daily ->
-                        item {
-                            DailyHeader(daily.date, daily.totalHours)
-                        }
-                        items(daily.records) { record ->
-                            TimelineItem(record)
+                    Surface(
+                        shape = RoundedCornerShape(32.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shadowElevation = 12.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
+                                Text(
+                                    "Marcar para hoy:", 
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    uiState.employees.find { it.id == uiState.selectedEmployeeId }?.name ?: "",
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    maxLines = 1
+                                )
+                            }
+                            Button(
+                                onClick = { viewModel.addRecord(uiState.selectedEmployeeId!!, RecordType.ENTRADA) },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF43A047)),
+                                shape = RoundedCornerShape(12.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp)
+                            ) {
+                                Text("ENTRADA", style = MaterialTheme.typography.labelLarge)
+                            }
+                            Button(
+                                onClick = { viewModel.addRecord(uiState.selectedEmployeeId!!, RecordType.SALIDA) },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)),
+                                shape = RoundedCornerShape(12.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp)
+                            ) {
+                                Text("SALIDA", style = MaterialTheme.typography.labelLarge)
+                            }
                         }
                     }
                 }

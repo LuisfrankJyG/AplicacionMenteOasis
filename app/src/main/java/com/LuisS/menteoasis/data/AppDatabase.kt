@@ -6,22 +6,19 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.LuisS.menteoasis.data.dao.AttendanceDao
 import com.LuisS.menteoasis.data.dao.BirthdayDao
-import com.LuisS.menteoasis.data.dao.NoteDao
-import com.LuisS.menteoasis.data.entities.*
-
+import com.LuisS.menteoasis.data.entities.EmployeeEntity
+import com.LuisS.menteoasis.data.entities.AttendanceRecordEntity
+import com.LuisS.menteoasis.data.entities.BirthdayEntity
 @Database(
     entities = [
-        NoteEntity::class,
-        ChecklistItemEntity::class,
         EmployeeEntity::class,
         AttendanceRecordEntity::class,
         BirthdayEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun noteDao(): NoteDao
     abstract fun attendanceDao(): AttendanceDao
     abstract fun birthdayDao(): BirthdayDao
 
@@ -34,7 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "mente_oasis_database"
+                    "mente_oasis_v2_db"
                 )
                 .fallbackToDestructiveMigration()
                 .build()

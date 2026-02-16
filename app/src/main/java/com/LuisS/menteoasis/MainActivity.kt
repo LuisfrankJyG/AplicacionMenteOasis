@@ -27,20 +27,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.LuisS.menteoasis.ui.features.asistencia.AsistenciaScreen
-import com.LuisS.menteoasis.ui.features.checklist.ChecklistScreen
-import com.LuisS.menteoasis.ui.features.checklist.NoteEditorScreen
-import com.LuisS.menteoasis.ui.features.cumpleanos.CumpleanosScreen
 import com.LuisS.menteoasis.ui.theme.MenteOasisTheme
-
+import com.LuisS.menteoasis.ui.features.asistencia.AsistenciaScreen
+import com.LuisS.menteoasis.ui.features.cumpleanos.CumpleanosScreen
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
-    object Checklist : Screen("checklist", "Notas", Icons.Default.Check)
     object Asistencia : Screen("asistencia", "Asistencia", Icons.Default.Person)
     object Cumpleanos : Screen("cumpleanos", "Cumpleaños", Icons.Default.DateRange)
 }
 
 val items = listOf(
-    Screen.Checklist,
     Screen.Asistencia,
     Screen.Cumpleanos,
 )
@@ -92,30 +87,11 @@ fun MenteOasisApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Checklist.route,
+            startDestination = Screen.Asistencia.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Checklist.route) { 
-                ChecklistScreen(
-                    onNavigateToEditor = { noteId ->
-                        val route = if (noteId != null) "note_editor/$noteId" else "note_editor/-1"
-                        navController.navigate(route)
-                    }
-                ) 
-            }
             composable(Screen.Asistencia.route) { AsistenciaScreen() }
             composable(Screen.Cumpleanos.route) { CumpleanosScreen() }
-            
-            composable(
-                route = "note_editor/{noteId}",
-                arguments = listOf(navArgument("noteId") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val noteId = backStackEntry.arguments?.getInt("noteId") ?: -1
-                NoteEditorScreen(
-                    noteId = noteId,
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
         }
     }
 }

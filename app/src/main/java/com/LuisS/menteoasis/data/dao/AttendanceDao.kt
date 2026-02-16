@@ -21,4 +21,7 @@ interface AttendanceDao {
 
     @Query("SELECT * FROM attendance_records WHERE timestamp BETWEEN :start AND :end ORDER BY timestamp DESC")
     fun getRecordsByDateRange(start: Long, end: Long): Flow<List<AttendanceRecordEntity>>
+
+    @Query("SELECT * FROM attendance_records ORDER BY timestamp DESC")
+    fun getAllRecords(): Flow<List<AttendanceRecordEntity>>
 }

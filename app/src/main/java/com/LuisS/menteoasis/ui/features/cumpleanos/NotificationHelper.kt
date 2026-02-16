@@ -7,6 +7,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.LuisS.menteoasis.R
 
+import com.LuisS.menteoasis.data.entities.BirthdayEntity
+
 const val NOTIFICATION_ID = 1
 const val CHANNEL_ID = "birthday_channel"
 
@@ -24,7 +26,7 @@ fun createNotificationChannel(context: Context) {
     }
 }
 
-fun showBirthdayNotification(context: Context, birthday: Birthday, message: String) {
+fun showBirthdayNotification(context: Context, birthday: BirthdayEntity, message: String) {
     val builder = NotificationCompat.Builder(context, CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_launcher_foreground) // Reemplazar con un ícono apropiado
         .setContentTitle("MenteOasis: Cumpleaños")

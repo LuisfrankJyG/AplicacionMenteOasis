@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.LuisS.menteoasis.MainActivity
+import com.LuisS.menteoasis.data.entities.BirthdayEntity
 
 class BirthdayReminderWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
@@ -17,10 +17,11 @@ class BirthdayReminderWorker(appContext: Context, workerParams: WorkerParameters
         // Show Notification
         createNotificationChannel(applicationContext)
         
-        val birthday = com.LuisS.menteoasis.ui.features.cumpleanos.Birthday(
+        val birthday = BirthdayEntity(
             id = 0,
-            nombre = nombre,
-            fecha = "" 
+            name = nombre,
+            day = 0,
+            month = 0
         )
         
         showBirthdayNotification(applicationContext, birthday, mensaje)

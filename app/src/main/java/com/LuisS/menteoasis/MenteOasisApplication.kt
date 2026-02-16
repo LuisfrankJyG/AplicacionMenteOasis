@@ -8,7 +8,6 @@ class MenteOasisApplication : Application() {
     val database by lazy { AppDatabase.getDatabase(this) }
     val repository by lazy { 
         MenteOasisRepository(
-            database.noteDao(),
             database.attendanceDao(),
             database.birthdayDao()
         ) 

@@ -1,0 +1,617 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :app
+WARNING: The option setting 'android.disallowKotlinSourceSets=false' is experimental.
+The current default is 'true'.
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+
+> Task :app:compileDebugKotlin
+./gradlew : e: file:/
+//C:/Users/user/Andro
+idStudioProjects/Ment
+eOasis/app/src/main/j
+ava/com/LuisS/menteoa
+sis/ui/features/asist
+encia/AsistenciaScree
+n.kt:182:29 
+Unresolved reference 
+'DailyHeader'.
+En línea: 1 
+Carácter: 1
++ ./gradlew :app:comp
+ileDebugKotlin 
+--no-daemon 
+--console=plain > 
+build ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (e: file   
+ :///C:/U... 'Dai    
+lyHeader'.:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/asistencia/Asiste
+nciaScreen.kt:185:29 
+Unresolved reference 
+'TimelineItem'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/asistencia/Asiste
+nciaScreen.kt:224:9 
+Unresolved reference 
+'AddEmployeeDialog'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/asistencia/Asiste
+nciaScreen.kt:226:27 
+Cannot infer type 
+for this parameter. 
+Specify it 
+explicitly.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/asistencia/Asiste
+nciaScreen.kt:226:33 
+Cannot infer type 
+for this parameter. 
+Specify it 
+explicitly.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/asistencia/Asiste
+nciaScreen.kt:412:2 
+Syntax error: 
+Expecting '}'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:42:5 
+No value passed for 
+parameter 'content'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:62:10 
+Syntax error: 
+Expecting ')'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:63:7 
+Syntax error: 
+Expecting a top 
+level declaration.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:63:9 
+Syntax error: 
+Expecting a top 
+level declaration.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:63:9 
+Functions which 
+invoke @Composable 
+functions must be 
+marked with the 
+@Composable 
+annotation
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:63:9 
+Function declaration 
+must have a name.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:63:11 
+Unresolved reference 
+'innerPadding'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:63:24 
+Syntax error: 
+Unexpected tokens 
+(use ';' to separate 
+expressions on the 
+same line).
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:64:9 
+@Composable 
+invocations can only 
+happen from the 
+context of a 
+@Composable function
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:64:55 
+Unresolved reference 
+'innerPadding'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:79:17 
+Unresolved reference 
+'uiState'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:91:27 
+Unresolved reference 
+'uiState'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:93:40 
+Argument type 
+mismatch: actual 
+type is 'Int', but 
+'BirthdayEntity' was 
+expected.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:94:41 
+Cannot infer type 
+for this parameter. 
+Specify it 
+explicitly.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:94:41 
+Function invocation 
+'viewModel(...)' 
+expected.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:94:51 
+Unresolved reference 
+'getDaysUntilBirthday
+'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:95:42 
+Cannot infer type 
+for this parameter. 
+Specify it 
+explicitly.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:95:42 
+@Composable 
+invocations can only 
+happen from the 
+context of a 
+@Composable function
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:95:42 
+Function invocation 
+'viewModel(...)' 
+expected.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:95:52 
+Unresolved reference 
+'deleteBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:105:9 
+Unresolved reference 
+'showNameDialog'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:106:9 
+@Composable 
+invocations can only 
+happen from the 
+context of a 
+@Composable function
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:107:34 
+Unresolved reference 
+'showNameDialog'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:111:29 
+Unresolved reference 
+'nameForNewBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:112:39 
+Unresolved reference 
+'nameForNewBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:112:60 
+Unresolved reference 
+'it'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:113:31 
+@Composable 
+invocations can only 
+happen from the 
+context of a 
+@Composable function
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:120:25 
+Unresolved reference 
+'nameForNewBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:121:25 
+Unresolved reference 
+'showNameDialog'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:122:25 
+Unresolved reference 
+'showDatePicker'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:129:40 
+Unresolved reference 
+'showNameDialog'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:136:9 
+Unresolved reference 
+'showDatePicker'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:137:9 
+@Composable 
+invocations can only 
+happen from the 
+context of a 
+@Composable function
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:137:9 
+This material API is 
+experimental and is 
+likely to change or 
+to be removed in the 
+future.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:138:34 
+Unresolved reference 
+'showDatePicker'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:141:32 
+Unresolved reference 
+'datePickerState'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:143:81 
+Assignment type 
+mismatch: actual 
+type is 'Any', but 
+'Long' was expected.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:144:25 
+Cannot infer type 
+for this parameter. 
+Specify it 
+explicitly.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:144:25 
+@Composable 
+invocations can only 
+happen from the 
+context of a 
+@Composable function
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:144:25 
+Function invocation 
+'viewModel(...)' 
+expected.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:144:35 
+Unresolved reference 
+'addBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:145:36 
+Unresolved reference 
+'nameForNewBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:150:25 
+Unresolved reference 
+'nameForNewBirthday'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:151:25 
+Unresolved reference 
+'showDatePicker'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:158:40 
+Unresolved reference 
+'showDatePicker'.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:163:13 
+This material API is 
+experimental and is 
+likely to change or 
+to be removed in the 
+future.
+e: file:///C:/Users/u
+ser/AndroidStudioProj
+ects/MenteOasis/app/s
+rc/main/java/com/Luis
+S/menteoasis/ui/featu
+res/cumpleanos/Cumple
+anosScreen.kt:163:32 
+Unresolved reference 
+'datePickerState'.
+
+> Task :app:compileDebugKotlin FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/user/AndroidStudioProjects/MenteOasis/build/reports/problems/problems-report.html
+
+FAILURE: Build 
+failed with an 
+exception.
+
+* What went wrong:
+Execution failed for 
+task ':app:compileDeb
+ugKotlin'.
+> A failure occurred 
+while executing org.j
+etbrains.kotlin.compi
+lerRunner.GradleCompi
+lerRunnerWithWorkers$
+GradleKotlinCompilerW
+orkAction
+   > Compilation 
+error. See log for 
+more details
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+generate a Build 
+Scan (powered by 
+Develocity).
+> Get more help at ht
+tps://help.gradle.org
+.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 23s
+7 actionable tasks: 1 executed, 6 up-to-date

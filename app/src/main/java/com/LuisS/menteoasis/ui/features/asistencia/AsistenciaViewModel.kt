@@ -5,16 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.LuisS.menteoasis.data.MenteOasisRepository
 import com.LuisS.menteoasis.data.entities.AttendanceRecordEntity
 import com.LuisS.menteoasis.data.entities.EmployeeEntity
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-
-
 
 data class AttendanceRecordWithEmployee(
     val record: AttendanceRecordEntity,
@@ -30,77 +31,160 @@ data class DailyAttendance(
 
 data class AsistenciaUiState(
     val employees: List<EmployeeEntity> = emptyList(),
-    val dailyRecords: List<DailyAttendance> = emptyList()
+    val dailyRecords: List<DailyAttendance> = emptyList(),
+    val totalPeriodHours: String = "0h 0m",
+    val selectedEmployeeId: Int? = null,
+    val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH),
+    val selectedYear: Int = Calendar.getInstance().get(Calendar.YEAR)
 )
 
 class AsistenciaViewModel(
     private val repository: MenteOasisRepository
 ) : ViewModel() {
 
-    // Combine employees and records to show a rich history
-    // For simplicity, we'll just fetch all employees and maybe filtered records?
-    // Let's correct the Dao to return a Flow of records joined with employees or handle it in VM.
-    // Dao currently returns Flow<List<AttendanceRecordEntity>> for a specific employee or range.
-    // Let's start simple: Get employees to select, and get records for *today* or just *recent* globally?
-    // The previous implementation showed a list. Let's show recent records for the Selected Employee or All?
-    // Let's show All employees for selection, and All recent records.
-    
-    // We need a flow for ALL records to show the history list.
-    // I didn't add "getAllRecords" to Repository/Dao. Let's add it or use "getRecordsByDateRange" with a wide range.
-    
+    private val _selectedEmployeeId = MutableStateFlow<Int?>(null)
+    private val _selectedMonth = MutableStateFlow(Calendar.getInstance().get(Calendar.MONTH))
+    private val _selectedYear = MutableStateFlow(Calendar.getInstance().get(Calendar.YEAR))
+
     val uiState: StateFlow<AsistenciaUiState> = combine(
         repository.allEmployees,
-        repository.getRecordsByDateRange(System.currentTimeMillis() - 86400000 * 7, System.currentTimeMillis() + 86400000)
-    ) { employees, records ->
-        val enrichedRecords = records.map { record ->
+        repository.getAllRecords(),
+        _selectedEmployeeId,
+        _selectedMonth,
+        _selectedYear
+    ) { employees, allRecords, selEmployee, selMonth, selYear ->
+        
+        // 1. Calculate TOTAL HOURS for the selected period (selMonth/selYear)
+        val targetEmployees = if (selEmployee == null) employees else employees.filter { it.id == selEmployee }
+        var totalPeriodMillis = 0L
+        val now = System.currentTimeMillis()
+
+        targetEmployees.forEach { employee ->
+            val empRecords = allRecords.filter { it.employeeId == employee.id }.sortedBy { it.timestamp }
+            var lastEntryTime: Long? = null
+            
+            empRecords.forEach { record ->
+                if (record.type == "ENTRADA") {
+                    lastEntryTime = record.timestamp
+                } else if (record.type == "SALIDA" && lastEntryTime != null) {
+                    val duration = record.timestamp - lastEntryTime!!
+                    
+                    val cal = Calendar.getInstance()
+                    cal.timeInMillis = record.timestamp
+                    if (cal.get(Calendar.MONTH) == selMonth && cal.get(Calendar.YEAR) == selYear) {
+                        totalPeriodMillis += duration
+                    }
+                    lastEntryTime = null
+                }
+            }
+            
+            // If they are STILL clocked in, add the active time to the current month if applicable
+            if (lastEntryTime != null) {
+                val calNow = Calendar.getInstance()
+                if (calNow.get(Calendar.MONTH) == selMonth && calNow.get(Calendar.YEAR) == selYear) {
+                    totalPeriodMillis += (now - lastEntryTime!!)
+                }
+            }
+        }
+
+        // 2. Prepare DISPLAY records for the timeline (filtered by Month/Year/Employee)
+        val cal = Calendar.getInstance()
+        val filteredRecords = allRecords.filter { record ->
+            cal.timeInMillis = record.timestamp
+            val matchMonth = cal.get(Calendar.MONTH) == selMonth
+            val matchYear = cal.get(Calendar.YEAR) == selYear
+            val matchEmployee = selEmployee == null || record.employeeId == selEmployee
+            matchMonth && matchYear && matchEmployee
+        }
+
+        val enrichedRecords = filteredRecords.map { record ->
             val employee = employees.find { it.id == record.employeeId }
             AttendanceRecordWithEmployee(
                 record = record,
-                employeeName = employee?.name ?: "Unknown",
+                employeeName = employee?.name ?: "Desconocido",
                 employeeRole = employee?.role ?: ""
             )
         }
 
-        // Group by day
+        // Group by day for the timeline
         val sdf = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
-        val grouped = enrichedRecords.groupBy { record: AttendanceRecordWithEmployee -> 
+        val groupedByDay = enrichedRecords.groupBy { record: AttendanceRecordWithEmployee -> 
             sdf.format(Date(record.record.timestamp))
         }.map { (date, dailyList) ->
-            // Simple hour calc for same-employee pairs in one day
-            // This is basic; a more robust one would match exact pairs
-            val totalMillis = calculateTotalMillis(dailyList)
-            val hoursStr = if (totalMillis > 0) {
-                val hours = totalMillis / 3600000
-                val mins = (totalMillis % 3600000) / 60000
-                String.format("%dh %dm", hours, mins)
-            } else null
+            // For daily total, we use the matched duration logic too
+            val dayTotal = calculateDailyMatchedTotal(dailyList, allRecords, now)
+            DailyAttendance(date, dailyList, formatMillis(dayTotal))
+        }
 
-            DailyAttendance(date, dailyList, hoursStr)
-        }.sortedByDescending { it.records.firstOrNull()?.record?.timestamp ?: 0L }
-
-        AsistenciaUiState(employees, grouped)
+        AsistenciaUiState(
+            employees = employees,
+            dailyRecords = groupedByDay.sortedByDescending { 
+                it.records.firstOrNull()?.record?.timestamp ?: 0L
+            },
+            totalPeriodHours = formatMillis(totalPeriodMillis) ?: "0h 0m",
+            selectedEmployeeId = selEmployee,
+            selectedMonth = selMonth,
+            selectedYear = selYear
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = AsistenciaUiState()
     )
 
-    private fun calculateTotalMillis(records: List<AttendanceRecordWithEmployee>): Long {
-        var total = 0L
-        val employeeRecords = records.groupBy { it.record.employeeId }
-        employeeRecords.forEach { (_, logs) ->
-            val sortedLogs = logs.sortedBy { it.record.timestamp }
-            var entryTime: Long? = null
-            sortedLogs.forEach { log ->
-                if (log.record.type == "ENTRADA") {
-                    entryTime = log.record.timestamp
-                } else if (log.record.type == "SALIDA" && entryTime != null) {
-                    total += (log.record.timestamp - entryTime!!)
-                    entryTime = null
+    private fun calculateDailyMatchedTotal(
+        dailyRecords: List<AttendanceRecordWithEmployee>, 
+        allRecords: List<AttendanceRecordEntity>,
+        now: Long
+    ): Long {
+        var dayTotal = 0L
+        
+        dailyRecords.forEach { item ->
+            if (item.record.type == "SALIDA") {
+                // Find matching entry (the most recent one before this exit)
+                val matchingEntry = allRecords.filter { 
+                    it.employeeId == item.record.employeeId && 
+                    it.type == "ENTRADA" && 
+                    it.timestamp < item.record.timestamp 
+                }.maxByOrNull { it.timestamp }
+                
+                if (matchingEntry != null) {
+                    dayTotal += (item.record.timestamp - matchingEntry.timestamp)
+                }
+            } else if (item.record.type == "ENTRADA") {
+                // Check if this specific ENTRADA is still open (no SALIDA after it for this employee)
+                val hasSubsequentSalida = allRecords.any { 
+                    it.employeeId == item.record.employeeId && 
+                    it.type == "SALIDA" && 
+                    it.timestamp > item.record.timestamp 
+                }
+                
+                if (!hasSubsequentSalida) {
+                    dayTotal += (now - item.record.timestamp)
                 }
             }
         }
-        return total
+        return dayTotal
+    }
+
+    private fun formatMillis(millis: Long): String? {
+        if (millis <= 0) return null
+        val hours = millis / 3600000
+        val mins = (millis % 3600000) / 60000
+        // Show units properly even if small
+        return if (hours > 0 || mins > 0) String.format("%dh %dm", hours, mins) else "0h 0m"
+    }
+
+    fun setEmployeeFilter(employeeId: Int?) {
+        _selectedEmployeeId.value = employeeId
+    }
+
+    fun setMonthFilter(month: Int) {
+        _selectedMonth.value = month
+    }
+
+    fun setYearFilter(year: Int) {
+        _selectedYear.value = year
     }
 
     fun addEmployee(name: String, role: String) {

@@ -7,16 +7,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.LuisS.menteoasis.MenteOasisApplication
 import com.LuisS.menteoasis.data.MenteOasisRepository
 import com.LuisS.menteoasis.ui.features.asistencia.AsistenciaViewModel
-import com.LuisS.menteoasis.ui.features.checklist.ChecklistViewModel
 import com.LuisS.menteoasis.ui.features.cumpleanos.CumpleanosViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        initializer {
-            ChecklistViewModel(
-                menteOasisApplication().repository
-            )
-        }
         initializer {
             AsistenciaViewModel(
                 menteOasisApplication().repository
